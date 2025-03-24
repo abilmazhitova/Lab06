@@ -1,6 +1,7 @@
 package com.example.lab06;
 
 import android.os.Bundle;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -22,9 +23,27 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        TextView selectedText = findViewById(R.id.textView_selected);
+
+        adapter = new CountryAdapter(this, countryList, new CountryAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Country country) {
+                String message = "Selected : " + country.getCountryName() +
+                        " (Population: " + country.getPopulation() + ")";
+                selectedText.setText(message);
+            }
+        });
+        recyclerView.setAdapter(adapter);
 
         countryList = getCountryList();
-        adapter = new CountryAdapter(this, countryList);
+        adapter = new CountryAdapter(this, countryList, new CountryAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Country country) {
+                String message = "Selected : " + country.getCountryName() +
+                        " (Population: " + country.getPopulation() + ")";
+                selectedText.setText(message);
+            }
+        });
         recyclerView.setAdapter(adapter);
     }
 

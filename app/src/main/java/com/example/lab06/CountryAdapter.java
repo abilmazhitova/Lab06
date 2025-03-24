@@ -15,15 +15,24 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
 
     private List<Country> countryList;
     private Context context;
+    private OnItemClickListener listener;
 
-    public CountryAdapter(Context context, List<Country> countryList) {
+    // Интерфейс для обработки кликов
+    public interface OnItemClickListener {
+        void onItemClick(Country country);
+    }
+
+    // Конструктор адаптера
+    public CountryAdapter(Context context, List<Country> countryList, OnItemClickListener listener) {
         this.context = context;
         this.countryList = countryList;
+        this.listener = listener;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_row, parent, false);
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_row, parent, false);
         return new ViewHolder(view);
     }
 
@@ -33,10 +42,17 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
         holder.countryName.setText(country.getCountryName());
         holder.population.setText("Population: " + country.getPopulation());
 
-
+        // Получаем ID изображения по имени
         int imageId = context.getResources().getIdentifier(
                 country.getFlagName(), "mipmap", context.getPackageName());
         holder.flag.setImageResource(imageId);
+
+        // Обработка клика
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onItemClick(country);
+            }
+        });
     }
 
     @Override
@@ -44,6 +60,7 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
         return countryList.size();
     }
 
+    // ViewHolder — привязка к элементам item_row.xml
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView flag;
         TextView countryName, population;
