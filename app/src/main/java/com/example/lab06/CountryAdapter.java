@@ -17,12 +17,12 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
     private Context context;
     private OnItemClickListener listener;
 
-    // Интерфейс для обработки кликов
+
     public interface OnItemClickListener {
         void onItemClick(Country country);
     }
 
-    // Конструктор адаптера
+
     public CountryAdapter(Context context, List<Country> countryList, OnItemClickListener listener) {
         this.context = context;
         this.countryList = countryList;
@@ -42,17 +42,32 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
         holder.countryName.setText(country.getCountryName());
         holder.population.setText("Population: " + country.getPopulation());
 
-        // Получаем ID изображения по имени
+
         int imageId = context.getResources().getIdentifier(
                 country.getFlagName(), "mipmap", context.getPackageName());
         holder.flag.setImageResource(imageId);
 
-        // Обработка клика
+
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onItemClick(country);
             }
+
+
+            v.animate()
+                    .scaleX(0.97f)
+                    .scaleY(0.97f)
+                    .setDuration(100)
+                    .withEndAction(() -> {
+                        v.animate()
+                                .scaleX(1f)
+                                .scaleY(1f)
+                                .setDuration(100)
+                                .start();
+                    })
+                    .start();
         });
+
     }
 
     @Override
@@ -60,7 +75,7 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
         return countryList.size();
     }
 
-    // ViewHolder — привязка к элементам item_row.xml
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView flag;
         TextView countryName, population;
